@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'groovy'
+
+mainClassName = 'com.globallogic.test.tree.HelloWorld'
+
+group 'max.zakharov'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    baseName = 'treeContainer'
+    version = '0.1.0'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    testCompile(
+            'junit:junit:4.12',
+            'org.codehaus.groovy:groovy-all:2.4.4',
+            'org.spockframework:spock-core:1.0-groovy-2.4'
+    )
+    compile "cglib:cglib:2.2"
+}
+
+
+
+
