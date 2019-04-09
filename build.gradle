@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'groovy'
 
-mainClassName = 'com.globallogic.test.tree.HelloWorld'
+mainClassName = 'com.globallogic.test.tree.Application'
 
 group 'max.zakharov'
 version '1.0-SNAPSHOT'
