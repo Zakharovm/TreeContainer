@@ -19,7 +19,7 @@ public class Application {
         tree.events.subscribe(Operations.ADD_ELEMENT, new ConsoleNotificationListener<>());
         tree.events.subscribe(Operations.REMOVE_ELEMENT, new ConsoleNotificationListener<>());
         tree.events.subscribe(Operations.CHANGE_ELEMENT_NAME, new ConsoleNotificationListener<>());
-        tree.setRoot(new TreeNode<Integer>(1));
+        tree.setRoot(new TreeNode<>(1));
 
         TreeNode<Integer> treeRoot = tree.getRoot();
 
@@ -42,6 +42,6 @@ public class Application {
 
         Tree<String> tree2 = new Tree<>();
 
-        System.out.println(predicate.filterNodes(tree.getAllNodes(), predicate.isMoreThan(1) ));
+        System.out.println(tree.filterNodes(tree.getAllNodes(), predicate.isMoreThan(300) ));
     }
 }

@@ -1,6 +1,7 @@
 package com.globallogic.test.tree.service;
 
 import com.globallogic.test.tree.structure.Tree;
+import com.globallogic.test.tree.structure.TreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +27,10 @@ public class EventManager<T> {
         users.remove(listener);
     }
 
-    public void notifyListeners(Operations eventType, Tree<T> tree) {
+    public void notifyListeners(TreeNode<T> child, TreeNode<T> parent, Operations eventType) {
         List<EventListener<T>> users = listeners.get(eventType);
         for (EventListener<T> user : users) {
-            user.update(eventType, tree);
+            user.update(child, parent, eventType);
         }
     }
 }
