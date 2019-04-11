@@ -7,6 +7,8 @@ import com.globallogic.test.tree.service.Operations;
 import com.globallogic.test.tree.service.TreeUtils;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Tree<T> implements Search<T>, TreeUtils<T> {
 
@@ -24,8 +26,8 @@ public class Tree<T> implements Search<T>, TreeUtils<T> {
     }
 
     public void setRoot(TreeNode<T> root) {
+        events.notifyListeners(this.root, root, Operations.CHANGE_ELEMENT_NAME);
         this.root = root;
-        events.notifyListeners(Operations.CHANGE_ELEMENT_NAME, this);
     }
 
     public TreeNode<T> getRoot() {
@@ -40,53 +42,56 @@ public class Tree<T> implements Search<T>, TreeUtils<T> {
     @Override
     public void addChildToParent(T childData, T parentData) throws MaxChildrenException {
         TreeNode<T> parent = findNode(parentData);
-        parent.addChild(childData);
-        events.notifyListeners(Operations.ADD_ELEMENT, this);
+        TreeNode<T> child = new TreeNode<>(childData);
+        parent.addChild(child);
+        events.notifyListeners(child, parent, Operations.ADD_ELEMENT);
     }
 
     @Override
     public void addChildToParent(TreeNode<T> child, T parentData) throws MaxChildrenException {
         TreeNode<T> parent = findNode(parentData);
         parent.addChild(child);
-        events.notifyListeners(Operations.ADD_ELEMENT, this);
+        events.notifyListeners(child, parent, Operations.ADD_ELEMENT);
     }
 
     @Override
-    public void addChildToParent(T child, TreeNode<T> parent) throws MaxChildrenException {
+    public void addChildToParent(T childData, TreeNode<T> parent) throws MaxChildrenException {
+        TreeNode<T> child = new TreeNode<>(childData);
         parent.addChild(child);
-        events.notifyListeners(Operations.ADD_ELEMENT, this);
+        events.notifyListeners(child, parent, Operations.ADD_ELEMENT);
     }
 
     @Override
     public void addChildToParent(TreeNode<T> child, TreeNode<T> parent) throws MaxChildrenException {
         parent.addChild(child);
-        events.notifyListeners(Operations.ADD_ELEMENT, this);
+        events.notifyListeners(child, parent, Operations.ADD_ELEMENT);
     }
 
     @Override
     public void addChildToParentAt(int index, TreeNode<T> child, TreeNode<T> parent) throws MaxChildrenException {
         parent.addChildAt(index, child);
-        events.notifyListeners(Operations.ADD_ELEMENT, this);
+        events.notifyListeners(child, parent, Operations.ADD_ELEMENT);
     }
 
     @Override
     public void addChildToParentAt(int index, T childData, T parentData) throws MaxChildrenException {
         TreeNode<T> parent = findNode(parentData);
-        parent.addChildAt(index, childData);
-        events.notifyListeners(Operations.ADD_ELEMENT, this);
+        TreeNode<T> child = new TreeNode<>(childData);
+        parent.addChildAt(index, child);
+        events.notifyListeners(child, parent, Operations.ADD_ELEMENT);
     }
 
     @Override
     public void removeChildFromParent(TreeNode<T> child, TreeNode<T> parent) {
         List<TreeNode<T>> toAddUtil = new ArrayList<>();
-        int index;
+        int indexOfChildToBeRemoved;
         boolean found = false;
 
         for (int i = 0; i < parent.getChildren().size(); i++) {
             TreeNode<T> node = parent.getChildren().get(i);
             if (child.equals(node)) {
                 found = true;
-                index = i;
+                indexOfChildToBeRemoved = i;
                 parent.setChildrenMaxQuantity(parent.getChildrenMaxQuantity() + node.getChildren().size() - 1);
                 for (TreeNode<T> childNode : node.getChildren()) {
                     childNode.setParent(parent);
@@ -94,9 +99,9 @@ public class Tree<T> implements Search<T>, TreeUtils<T> {
                 }
                 parent.removeChildAt(i);
                 for (TreeNode<T> element : toAddUtil) {
-                    parent.getChildren().add(index, element);
+                    parent.getChildren().add(indexOfChildToBeRemoved, element);
                 }
-                events.notifyListeners(Operations.REMOVE_ELEMENT, this);
+                events.notifyListeners(child, parent, Operations.REMOVE_ELEMENT);
                 break;
             }
         }
@@ -188,6 +193,14 @@ public class Tree<T> implements Search<T>, TreeUtils<T> {
         }
         resultList.add(node);
 
+    }
+
+    @Override
+    public List<TreeNode<T>> filterNodes(List<TreeNode<T>> nodes,
+                                         Predicate<TreeNode<T>> predicate) {
+        return nodes.stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
 }

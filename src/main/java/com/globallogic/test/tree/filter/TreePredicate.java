@@ -16,11 +16,4 @@ public class TreePredicate<T> {
         return p -> p.getData() < value;
     }
 
-    public List<TreeNode<T>> filterNodes(List<TreeNode<T>> nodes,
-                                             Predicate<TreeNode<T>> predicate) {
-        return nodes.stream()
-                .filter(predicate)
-                .collect(Collectors.toList());
-    }
-
 }
